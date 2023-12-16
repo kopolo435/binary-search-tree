@@ -5,8 +5,7 @@
         "es2021": true
     },
     "extends":[
-        "airbnb-base",
-        "prettier"
+        "airbnb-base"
       ],
     "overrides": [
     ],
@@ -14,6 +13,7 @@
         "ecmaVersion": "latest"
     },
     "rules": {
-        "no-console": "off"
+        "no-console": "off",
+        "quotes": ["error", "double"]
     }
 }
