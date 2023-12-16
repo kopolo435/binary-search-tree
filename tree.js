@@ -4,6 +4,8 @@ class Tree {
   constructor(array) {
     this.values = array;
     this.values = this.#mergeSort(0, this.values.length - 1);
+    this.values = this.#removeDuplicates(this.values);
+    this.root = this.#buildTree(this.values);
   }
 
   #mergeSort(start, end) {
@@ -36,7 +38,44 @@ class Tree {
     }
     return merged;
   }
-}
 
-const tree1 = new Tree([4, 1, 2]);
-console.log("hola1");
+  #removeDuplicates(array) {
+    const newMap = new Map();
+    const newArray = [];
+    array.forEach((element) => {
+      if (!newMap.get(element)) {
+        newMap.set(element, element);
+        newArray.push(element);
+      }
+    });
+    return newArray;
+  }
+
+  #buildTree(array) {
+    if (array.length === 1) {
+      return new Node(array[0]);
+    }
+    if (array.length === 2) {
+      return new Node(array[1], this.#buildTree(array.splice(0, 1)));
+    }
+    const midPoint = Math.floor(array.length / 2);
+    const leftChild = this.#buildTree(array.slice(0, midPoint));
+    const rightChild = this.#buildTree(array.slice(midPoint + 1, array.length));
+    return new Node(array[midPoint], leftChild, rightChild);
+  }
+}
+const prettyPrint = (node, prefix = "", isLeft = true) => {
+  if (node === null) {
+    return;
+  }
+  if (node.right !== null) {
+    prettyPrint(node.right, `${prefix}${isLeft ? "│   " : "    "}`, false);
+  }
+  console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.data}`);
+  if (node.left !== null) {
+    prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
+  }
+};
+
+const tree1 = new Tree([4, 1, 2, 6, 2, 8, 10, 22, 40]);
+prettyPrint(tree1.root);
