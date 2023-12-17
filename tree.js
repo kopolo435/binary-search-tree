@@ -148,6 +148,46 @@ class Tree {
     return this.#searchValue(node.getLeft(), value);
   }
 
+  #breathFirstSearch(callback = null, array = null) {
+    if (array.length === 0) {
+      return [];
+    }
+    const node = array.shift();
+    const newFila = array;
+    if (node.getLeft() != null) newFila.push(node.getLeft());
+    if (node.getRight() != null) newFila.push(node.getRight());
+
+    if (callback != null) {
+      callback(node);
+      return this.#breathFirstSearch(callback, newFila);
+    }
+
+    return [node].concat(this.#breathFirstSearch(null, newFila));
+  }
+
+  loopLevelOrder(callback = null) {
+    const fila = [];
+    const newFila = [];
+    fila.push(this.root);
+    while (fila.length > 0) {
+      const node = fila.shift();
+      if (node.getLeft() != null) {
+        fila.push(node.getLeft());
+        newFila.push(node.getLeft());
+      }
+      if (node.getRight() != null) {
+        fila.push(node.getRight());
+        newFila.push(node.getRight());
+      }
+      if (callback != null) {
+        callback(node);
+      }
+    }
+    if (callback === null) {
+      return newFila;
+    }
+  }
+
   insert(value) {
     this.#searchEmptyChild(this.root, value);
   }
@@ -165,6 +205,13 @@ class Tree {
 
   find(value) {
     return this.#searchValue(this.root, value);
+  }
+
+  levelOrder(callback = null) {
+    if (callback === null) {
+      return this.#breathFirstSearch(null, [this.root]);
+    }
+    this.#breathFirstSearch(callback, [this.root]);
   }
 }
 const prettyPrint = (node, prefix = "", isLeft = true) => {
@@ -184,5 +231,4 @@ const tree1 = new Tree([4, 1, 2, 6, 2, 8, 10, 22, 40]);
 prettyPrint(tree1.root);
 tree1.delete(144);
 prettyPrint(tree1.root);
-const test = tree1.find(2);
-console.log(test);
+console.log(tree1.loopLevelOrder());
