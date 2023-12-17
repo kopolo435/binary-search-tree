@@ -63,6 +63,29 @@ class Tree {
     const rightChild = this.#buildTree(array.slice(midPoint + 1, array.length));
     return new Node(array[midPoint], leftChild, rightChild);
   }
+
+  #searchEmptyChild(node, value) {
+    if (node === null) {
+      return new Node(value);
+    }
+
+    if (node.data === value) {
+      return 0;
+    }
+
+    if (node.data < value) {
+      const result = this.#searchEmptyChild(node.right, value);
+      if (typeof result === "object") node.setRight(result);
+      return 0;
+    }
+    const result = this.#searchEmptyChild(node.left, value);
+    if (typeof result === "object") node.setLeft(result);
+    return 0;
+  }
+
+  insert(value) {
+    this.#searchEmptyChild(this.root, value);
+  }
 }
 const prettyPrint = (node, prefix = "", isLeft = true) => {
   if (node === null) {
@@ -78,4 +101,6 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 };
 
 const tree1 = new Tree([4, 1, 2, 6, 2, 8, 10, 22, 40]);
+prettyPrint(tree1.root);
+tree1.insert(-1);
 prettyPrint(tree1.root);
