@@ -180,6 +180,23 @@ class Tree {
     return result;
   }
 
+  #preOrderRecursive(node, callback) {
+    let result = [];
+    if (callback != null) {
+      callback(node);
+    }
+    result.push(node);
+    if (node.getLeft() != null) {
+      result = result.concat(this.#preOrderRecursive(node.getLeft(), callback));
+    }
+    if (node.getRight() != null) {
+      result = result.concat(
+        this.#preOrderRecursive(node.getRight(), callback)
+      );
+    }
+    return result;
+  }
+
   loopLevelOrder(callback = null) {
     const fila = [];
     const newFila = [];
@@ -235,6 +252,13 @@ class Tree {
     }
     this.#inOrderRecursive(this.root, callback);
   }
+
+  preOrder(callback = null) {
+    if (callback === null) {
+      return this.#preOrderRecursive(this.root, null);
+    }
+    this.#preOrderRecursive(this.root, callback);
+  }
 }
 const prettyPrint = (node, prefix = "", isLeft = true) => {
   if (node === null) {
@@ -253,4 +277,4 @@ const tree1 = new Tree([4, 1, 2, 6, 2, 8, 10, 22, 40]);
 prettyPrint(tree1.root);
 tree1.delete(144);
 prettyPrint(tree1.root);
-tree1.inOrder(console.log);
+tree1.preOrder(console.log);
