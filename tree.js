@@ -133,6 +133,21 @@ class Tree {
     }
   }
 
+  #searchValue(node, value) {
+    if (node === null) {
+      return -1;
+    }
+    if (node.data === value) {
+      return node;
+    }
+
+    if (value > node.data) {
+      return this.#searchValue(node.getRight(), value);
+    }
+
+    return this.#searchValue(node.getLeft(), value);
+  }
+
   insert(value) {
     this.#searchEmptyChild(this.root, value);
   }
@@ -146,6 +161,10 @@ class Tree {
     } else {
       this.#searchDeleteValue(this.root, value);
     }
+  }
+
+  find(value) {
+    return this.#searchValue(this.root, value);
   }
 }
 const prettyPrint = (node, prefix = "", isLeft = true) => {
@@ -165,3 +184,5 @@ const tree1 = new Tree([4, 1, 2, 6, 2, 8, 10, 22, 40]);
 prettyPrint(tree1.root);
 tree1.delete(144);
 prettyPrint(tree1.root);
+const test = tree1.find(2);
+console.log(test);
