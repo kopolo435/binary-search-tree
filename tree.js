@@ -83,8 +83,69 @@ class Tree {
     return 0;
   }
 
+  #findInOrder(node) {
+    if (node.getLeft() === null) {
+      return node;
+    }
+
+    const result = this.#findInOrder(node.getLeft());
+    if (result.data === node.getLeft().data) node.setLeft(null);
+    return result;
+  }
+
+  #searchDeleteValue(node, value) {
+    if (node === null) {
+      return 0;
+    }
+
+    if (node.data === value) {
+      if (node.getRight() !== null && node.getLeft() !== null) {
+        if (node.getRight().getLeft() === null) {
+          const replaceNode = node.getRight();
+          replaceNode.setLeft(node.getLeft());
+          return replaceNode;
+        }
+        const replaceNode = this.#findInOrder(node.getRight());
+        replaceNode.setRight(node.getRight());
+        replaceNode.setLeft(node.getLeft());
+        return replaceNode;
+      }
+      if (node.getRight() !== null) {
+        return node.getRight();
+      }
+      if (node.getLeft() !== null) {
+        return node.getLeft();
+      }
+      return null;
+    }
+
+    if (node.data < value) {
+      const result = this.#searchDeleteValue(node.getRight(), value);
+      if (result === null) node.setRight(null);
+      if (typeof result === "object") node.setRight(result);
+      return 0;
+    }
+    if (node.data > value) {
+      const result = this.#searchDeleteValue(node.getLeft(), value);
+      if (result === null) node.setLeft(null);
+      if (typeof result === "object") node.setLeft(result);
+      return 0;
+    }
+  }
+
   insert(value) {
     this.#searchEmptyChild(this.root, value);
+  }
+
+  delete(value) {
+    if (value === this.root.data) {
+      const node = this.#findInOrder(this.root.getRight());
+      node.setLeft(this.root.getLeft());
+      node.setRight(this.root.getRight());
+      this.root = node;
+    } else {
+      this.#searchDeleteValue(this.root, value);
+    }
   }
 }
 const prettyPrint = (node, prefix = "", isLeft = true) => {
@@ -102,5 +163,5 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 
 const tree1 = new Tree([4, 1, 2, 6, 2, 8, 10, 22, 40]);
 prettyPrint(tree1.root);
-tree1.insert(-1);
+tree1.delete(144);
 prettyPrint(tree1.root);

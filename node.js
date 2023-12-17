@@ -9,7 +9,7 @@ export default class Node {
     this.right = node;
   }
 
-  getRIght() {
+  getRight() {
     return this.right;
   }
 
