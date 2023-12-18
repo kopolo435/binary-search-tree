@@ -337,7 +337,7 @@ export default class Tree {
   isBalanced() {
     const left = this.#calcHeight(this.root.getLeft());
     const right = this.#calcHeight(this.root.getRight());
-    return left - right <= 1;
+    return Math.abs(left - right) <= 1;
   }
 
   rebalance() {
