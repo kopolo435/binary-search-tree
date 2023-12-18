@@ -1,6 +1,6 @@
 import Node from "./node.js";
 
-class Tree {
+export default class Tree {
   constructor(array) {
     this.values = array;
     this.values = this.#mergeSort(0, this.values.length - 1);
@@ -333,22 +333,19 @@ class Tree {
   depth(nodeWanted) {
     return this.#calcDepth(this.root, nodeWanted);
   }
-}
-const prettyPrint = (node, prefix = "", isLeft = true) => {
-  if (node === null) {
-    return;
-  }
-  if (node.right !== null) {
-    prettyPrint(node.right, `${prefix}${isLeft ? "│   " : "    "}`, false);
-  }
-  console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.data}`);
-  if (node.left !== null) {
-    prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
-  }
-};
 
-const tree1 = new Tree([4, 1, 2, 6, 2, 8, 10, 22, 40]);
-prettyPrint(tree1.root);
-tree1.delete(144);
-prettyPrint(tree1.root);
-console.log(tree1.depth(tree1.find(6)));
+  isBalanced() {
+    const left = this.#calcHeight(this.root.getLeft());
+    const right = this.#calcHeight(this.root.getRight());
+    return left - right <= 1;
+  }
+
+  rebalance() {
+    const nodes = this.#inOrderRecursive(this.root);
+    const values = [];
+    nodes.forEach((node) => {
+      values.push(node.data);
+    });
+    this.root = this.#buildTree(values);
+  }
+}
