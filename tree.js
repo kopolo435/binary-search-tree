@@ -216,6 +216,46 @@ class Tree {
     return result;
   }
 
+  #calcHeight(node) {
+    if (node === null) {
+      return 0;
+    }
+
+    const left = this.#calcHeight(node.getLeft());
+    const right = this.#calcHeight(node.getRight());
+    if (left > right) {
+      return 1 + left;
+    }
+    return 1 + right;
+  }
+
+  #calcDepth(currentNode, nodeWanted) {
+    if (currentNode === null) {
+      return null;
+    }
+
+    if (currentNode === nodeWanted) {
+      return 0;
+    }
+
+    let right = this.#calcDepth(currentNode.getRight(), nodeWanted);
+    let left = this.#calcDepth(currentNode.getLeft(), nodeWanted);
+    if (right != null) right += 1;
+    if (left != null) left += 1;
+    if (right && left) {
+      return right > left ? right : left;
+    }
+
+    if (!right && left) {
+      return left;
+    }
+
+    if (!left && right) {
+      return right;
+    }
+    return null;
+  }
+
   loopLevelOrder(callback = null) {
     const fila = [];
     const newFila = [];
@@ -285,6 +325,14 @@ class Tree {
     }
     this.#postOrderRecursive(this.root, callback);
   }
+
+  height() {
+    return this.#calcHeight(this.root);
+  }
+
+  depth(nodeWanted) {
+    return this.#calcDepth(this.root, nodeWanted);
+  }
 }
 const prettyPrint = (node, prefix = "", isLeft = true) => {
   if (node === null) {
@@ -303,4 +351,4 @@ const tree1 = new Tree([4, 1, 2, 6, 2, 8, 10, 22, 40]);
 prettyPrint(tree1.root);
 tree1.delete(144);
 prettyPrint(tree1.root);
-tree1.postOrder(console.log);
+console.log(tree1.depth(tree1.find(6)));
